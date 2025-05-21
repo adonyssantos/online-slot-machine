@@ -1,43 +1,48 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useGame } from "@/context/GameContext";
-
-const emojiMap: Record<string, string> = {
-  C: "🍒",
-  L: "🍋",
-  O: "🍊",
-  W: "🍉",
-};
+import { getRandomSymbol } from "@/lib/getRandomSymbol";
+import { emojiMap } from "@/lib/emojiMap";
 
 export const SlotDisplay = () => {
-  const { result, isLoading } = useGame();
-  const [visible, setVisible] = useState(["", "", ""]);
+  const { symbols, isLoading } = useGame();
+  const [displayedSymbols, setDisplayedSymbols] = useState<string[]>(["", "", ""]);
 
   useEffect(() => {
-    if (!result) return;
+    if (!symbols.length) return;
 
-    setVisible(["", "", ""]);
-    const timers = result.map((symbol, i) =>
-      setTimeout(() => {
-        setVisible((prev) => {
+    symbols.forEach((finalSymbol, index) => {
+      let count = 0;
+
+      const interval = setInterval(() => {
+        const random = getRandomSymbol();
+        setDisplayedSymbols((prev) => {
           const copy = [...prev];
-          copy[i] = symbol;
+          copy[index] = emojiMap[random];
           return copy;
         });
-      }, (i + 1) * 1000)
-    );
 
-    return () => timers.forEach(clearTimeout);
-  }, [result]);
+        count++;
+        if (count === 3) {
+          clearInterval(interval);
+          setDisplayedSymbols((prev) => {
+            const copy = [...prev];
+            copy[index] = emojiMap[finalSymbol];
+            return copy;
+          });
+        }
+      }, 150 * (index + 1));
+    });
+  }, [symbols]);
 
   return (
-    <div className="flex justify-center gap-4 text-6xl font-bold my-6">
-      {visible.map((val, i) => (
+    <div className="flex justify-center gap-4 mt-4">
+      {displayedSymbols.map((symbol, index) => (
         <div
-          key={i}
-          className="w-20 h-20 border-4 border-black rounded-xl flex items-center justify-center bg-white shadow-lg"
+          key={index}
+          className="w-20 h-20 text-5xl bg-white border-4 border-orange-300 rounded-xl flex items-center justify-center shadow-md transition-all duration-300 select-none"
         >
-          {isLoading && !val ? "🎰" : emojiMap[val] || "❓"}
+          {!symbol ? "❓" : symbol}
         </div>
       ))}
     </div>

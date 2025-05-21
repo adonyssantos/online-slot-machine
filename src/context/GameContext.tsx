@@ -10,6 +10,9 @@ export type GameContextType = {
   result: string[] | null;
   reward: number;
   isWin: boolean;
+  symbols: string[];
+  isRolling: boolean;
+  resultMessage: string;
 
   startGame: () => Promise<void>;
   roll: () => Promise<void>;
@@ -26,6 +29,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [result, setResult] = useState<string[] | null>(null);
   const [reward, setReward] = useState(0);
   const [isWin, setIsWin] = useState(false);
+  const [isRolling, setIsRolling] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+  const [symbols, setSymbols] = useState<string[]>([]);
 
   const startGame = async () => {
     const res = await fetch("/api/start", { method: "POST" });
@@ -39,19 +45,34 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const roll = async () => {
-    if (!sessionId) return;
+    if (!sessionId || isRolling) return;
+
     setIsLoading(true);
+    setIsRolling(true);
+    setResultMessage("");
+
     const res = await fetch("/api/roll", {
       method: "POST",
-      body: JSON.stringify({ sessionId }),
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
     });
+
     const data = await res.json();
+
     setCredits(data.credits);
+    setSymbols(data.result);
     setRolls((prev) => prev + 1);
-    setResult(data.result);
-    setReward(data.reward);
-    setIsWin(data.isWin);
+
+    setTimeout(() => {
+      const [a, b, c] = data.result;
+      if (a === b && b === c) {
+        setResultMessage(`🎉 You won ${data.reward} credits!`);
+      } else {
+        setResultMessage("😞 Try again!");
+      }
+    }, 3000);
+
+    setIsRolling(false);
     setIsLoading(false);
   };
 
@@ -86,6 +107,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         result,
         reward,
         isWin,
+        symbols,
+        isRolling,
+        resultMessage,
         startGame,
         roll,
         cashOut,
