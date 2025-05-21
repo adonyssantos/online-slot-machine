@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useGame } from "@/context/GameContext";
 
 export const CashOutButton = () => {
@@ -10,9 +10,16 @@ export const CashOutButton = () => {
 
   const handleHover = () => {
     if (Math.random() < 0.5) {
-      const x = Math.random() > 0.5 ? 300 : -300;
-      const y = Math.random() > 0.5 ? 300 : -300;
-      setStyle({ transform: `translate(${x}px, ${y}px)` });
+      const offsetX = Math.floor(Math.random() * 300 - 150); // -150 a +150
+      const offsetY = Math.floor(Math.random() * 300 - 150);
+
+      setStyle({
+        transform: `translate(${offsetX}px, ${offsetY}px)`,
+        maxWidth: "100vw",
+        maxHeight: "100vh",
+        overflow: "hidden",
+        position: "relative",
+      });
     }
 
     if (Math.random() < 0.4) {
