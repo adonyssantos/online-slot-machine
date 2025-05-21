@@ -1,4 +1,4 @@
-type Session = {
+export type Session = {
   id: string;
   credits: number;
   rolls: number;
