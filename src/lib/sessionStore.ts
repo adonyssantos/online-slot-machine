@@ -4,7 +4,15 @@ export type Session = {
   rolls: number;
 };
 
-const sessions = new Map<string, Session>();
+const globalForSessions = globalThis as unknown as {
+  sessions: Map<string, Session> | undefined;
+};
+
+const sessions = globalForSessions.sessions ?? new Map<string, Session>();
+
+if (!globalForSessions.sessions) {
+  globalForSessions.sessions = sessions;
+}
 
 export function createSession(sessionId: string): Session | undefined {
   sessions.set(sessionId, { id: sessionId, credits: 10, rolls: 0 });
