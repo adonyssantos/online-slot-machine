@@ -90,6 +90,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setSessionId(null);
       setCredits(0);
       setRolls(0);
+      setResult(null);
+      setReward(0);
+      setIsWin(false);
+      setResultMessage("");
+      setSymbols([]);
+      setIsRolling(false);
+      setIsLoading(false);
       return data.cashedOut;
     } else {
       console.warn(data.error);

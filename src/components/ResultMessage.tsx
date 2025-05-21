@@ -4,10 +4,8 @@ import { useGame } from "@/context/GameContext";
 export const ResultMessage = () => {
   const { resultMessage } = useGame();
 
-  if (!resultMessage) return null;
-
   return (
-    <div className="text-center mt-4 text-lg font-semibold">
+    <div className="text-center mt-4 text-lg font-semibold min-h-7">
       <span>{resultMessage}</span>
     </div>
   );
