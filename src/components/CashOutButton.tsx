@@ -41,6 +41,7 @@ export const CashOutButton = () => {
       onClick={handleClick}
       onMouseEnter={handleHover}
       disabled={disabled || rolls < 2}
+      title={rolls < 2 ? "You need to roll at least twice!" : "Cash out!"}
       className="mt-6 px-6 py-3 rounded-xl bg-green-600 text-white font-semibold shadow-md hover:bg-green-700 disabled:opacity-50 transition-all duration-300"
       style={style}
     >
