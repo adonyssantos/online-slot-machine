@@ -2,6 +2,13 @@
 import { useEffect, useState } from "react";
 import { useGame } from "@/context/GameContext";
 
+const emojiMap: Record<string, string> = {
+  C: "🍒",
+  L: "🍋",
+  O: "🍊",
+  W: "🍉",
+};
+
 export const SlotDisplay = () => {
   const { result, isLoading } = useGame();
   const [visible, setVisible] = useState(["", "", ""]);
@@ -30,7 +37,7 @@ export const SlotDisplay = () => {
           key={i}
           className="w-20 h-20 border-4 border-black rounded-xl flex items-center justify-center bg-white shadow-lg"
         >
-          {isLoading && !val ? "🎰" : val || "?"}
+          {isLoading && !val ? "🎰" : emojiMap[val] || "❓"}
         </div>
       ))}
     </div>
