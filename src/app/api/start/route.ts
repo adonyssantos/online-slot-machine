@@ -4,10 +4,7 @@ import { randomUUID } from "crypto";
 
 export async function POST() {
   const sessionId = randomUUID();
-  createSession(sessionId);
+  const session = createSession(sessionId);
 
-  return NextResponse.json(
-    { sessionId, credits: 10 },
-    { status: 200 }
-  );
+  return NextResponse.json({ sessionId, credits: session?.credits }, { status: 200 });
 }
